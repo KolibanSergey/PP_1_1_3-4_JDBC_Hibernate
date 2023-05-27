@@ -16,6 +16,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
+
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS users" +
                     "(id BIGINT not null auto_increment," +
@@ -77,10 +78,21 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
+
+
         try (Statement statement = connection.createStatement()) {
+            connection.setAutoCommit(false);
+
             statement.executeUpdate("TRUNCATE TABLE users");
-        } catch (SQLException e) {
+            connection.commit();
+        } catch (SQLException | RuntimeException e) {
             e.printStackTrace();
+
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }
