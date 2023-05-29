@@ -13,31 +13,31 @@ public class UserServiceImpl implements UserService {
 
 
     public void createUsersTable() {
-        userDaoHibernate.createUsersTable();
+        userDaoJDBC.createUsersTable();
         System.out.println("Таблица users успешно создана");
 
 
     }
 
     public void dropUsersTable() {
-        userDaoHibernate.dropUsersTable();
+        userDaoJDBC.dropUsersTable();
         System.out.println("Таблица users успешно удалена");
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        userDaoHibernate.saveUser(name, lastName, age);
+        userDaoJDBC.saveUser(name, lastName, age);
         System.out.println("User с именем - " + name + " добавлен в базу данных");
     }
 
     public void removeUserById(long id) {
-        userDaoHibernate.removeUserById(id);
+        userDaoJDBC.removeUserById(id);
         System.out.println("User с id - " + id + " удален из базы данных");
 
     }
 
     public List<User> getAllUsers() {
 
-        List<User> users = userDaoHibernate.getAllUsers();
+        List<User> users = userDaoJDBC.getAllUsers();
         for (User user : users) {
             System.out.println(user);
         }
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
         public void cleanUsersTable () {
-            userDaoHibernate.cleanUsersTable();
+            userDaoJDBC.cleanUsersTable();
             System.out.println("Таблица users успешно очищена");
         }
 
