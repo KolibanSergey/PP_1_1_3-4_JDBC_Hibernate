@@ -26,6 +26,11 @@ public class UserDaoJDBCImpl implements UserDao {
                     "PRIMARY KEY (id))");
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         }
 
     }
@@ -35,6 +40,11 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate("DROP TABLE IF EXISTS users");
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         }
 
     }
@@ -47,6 +57,11 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -56,6 +71,11 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -63,6 +83,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         try (ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM users")) {
+
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getLong("id"));
@@ -78,16 +99,13 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-
-
         try (Statement statement = connection.createStatement()) {
             connection.setAutoCommit(false);
-
             statement.executeUpdate("TRUNCATE TABLE users");
             connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | RuntimeException e) {
             e.printStackTrace();
-
             try {
                 connection.rollback();
             } catch (SQLException ex) {
