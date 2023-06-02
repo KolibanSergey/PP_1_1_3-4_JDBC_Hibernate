@@ -33,7 +33,7 @@ public class Util {
 
     }
 
-    public static org.hibernate.SessionFactory hibernateConnection() {
+    public static org.hibernate.SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration()

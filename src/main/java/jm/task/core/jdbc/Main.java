@@ -23,7 +23,7 @@ public class Main {
 
         userService.saveUser("Banny", "Looney", (byte) 13);
 
-        userService.removeUserById(1);
+        userService.removeUserById(3);
         userService.getAllUsers();
         userService.cleanUsersTable();
         userService.dropUsersTable();

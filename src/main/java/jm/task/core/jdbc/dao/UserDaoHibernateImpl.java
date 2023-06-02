@@ -11,10 +11,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    private final SessionFactory sessionFactory = Util.hibernateConnection();
+    private final SessionFactory sessionFactory = Util.getSessionFactory();
 
     public UserDaoHibernateImpl() {
 
@@ -28,8 +29,8 @@ public class UserDaoHibernateImpl implements UserDao {
             session.createSQLQuery("CREATE TABLE IF NOT EXISTS users" +
                     "(id BIGINT not null auto_increment," +
                     "name VARCHAR(255), " +
-                    "lastName VARCHAR(255), " +
-                    "age INT, " +
+                    "last_Name VARCHAR(255), " +
+                    "age TINYINT, " +
                     "PRIMARY KEY (id))").executeUpdate();
             transaction.commit();
         } catch (HibernateException e) {
@@ -55,13 +56,11 @@ public class UserDaoHibernateImpl implements UserDao {
     }
 
     @Override
-    public void saveUser(String name, String lastName, byte age) {
+    public void saveUser(String name, String last_name, byte age) {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-
-            session.save(new User(name, lastName, age));
-            session.flush();
+            session.save(new User(name, last_name, age));
             transaction.commit();
         } catch (HibernateException e) {
             e.printStackTrace();
@@ -74,35 +73,38 @@ public class UserDaoHibernateImpl implements UserDao {
 
     public void removeUserById(long id) {
         Transaction transaction = null;
-        try (Session session = sessionFactory.openSession();) {
-            transaction = session.getTransaction();
-            transaction.begin();
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaDelete<User> delete = builder.createCriteriaDelete(User.class);
-            Root<User> geekRoot = delete.from(User.class);
-            delete.where(builder.equal(geekRoot.get("id"), id));
+            Root<User> root = delete.from(User.class);
+            delete.where(builder.equal(root.get("id"), id));
+            session.createQuery(delete).executeUpdate();
             transaction.commit();
         } catch (HibernateException e) {
             e.printStackTrace();
             if (transaction != null) transaction.rollback();
         }
+
     }
 
     @Override
     public List<User> getAllUsers() {
         Transaction transaction = null;
+        List<User> users = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             CriteriaQuery<User> query = session.getCriteriaBuilder().createQuery(User.class);
             query.from(User.class);
-            List<User> users = session.createQuery(query).getResultList();
+            users= session.createQuery(query).getResultList();
             transaction.commit();
             return users;
         } catch (HibernateException e) {
             e.printStackTrace();
             if (transaction != null) transaction.rollback();
-            return null;
+
         }
+        return users;
 
     }
 
