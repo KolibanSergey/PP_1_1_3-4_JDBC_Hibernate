@@ -5,7 +5,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import org.hibernate.service.ServiceRegistry;
 
 public class Util {
@@ -30,7 +34,7 @@ public class Util {
     }
 
     public static org.hibernate.SessionFactory hibernateConnection() {
-        if (sessionFactory == null){
+        if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration()
                         .setProperty("hibernate.connection.driver_class", DRIVER)

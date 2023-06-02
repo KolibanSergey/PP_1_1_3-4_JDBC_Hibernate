@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 
 public class Main {
     private static final UserService userService = new UserServiceImpl();
-    @Transactional
+
     public static void main(String[] args) {
 
 
@@ -27,5 +27,6 @@ public class Main {
         userService.getAllUsers();
         userService.cleanUsersTable();
         userService.dropUsersTable();
+
     }
 }

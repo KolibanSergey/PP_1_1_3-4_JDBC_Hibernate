@@ -3,9 +3,13 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.*;
+import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import java.sql.Statement;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
@@ -14,13 +18,14 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public UserDaoJDBCImpl() {
     }
+
     public void createUsersTable() {
 
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS users" +
                     "(id BIGINT not null auto_increment," +
                     "name VARCHAR(255), " +
-                    "lastName VARCHAR(255), " +
+                    "last_name VARCHAR(255), " +
                     "age INT, " +
                     "PRIMARY KEY (id))");
         } catch (SQLException e) {
@@ -38,10 +43,10 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
-    public void saveUser(String name, String lastName, byte age) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(name,lastName, age) VALUES (?,?,?)")) {
+    public void saveUser(String name, String last_name, byte age) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(name,last_name, age) VALUES (?,?,?)")) {
             preparedStatement.setString(1, name);
-            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(2, last_name);
             preparedStatement.setInt(3, age);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -66,7 +71,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 User user = new User();
                 user.setId(resultSet.getLong("id"));
                 user.setName(resultSet.getString("name"));
-                user.setLastName(resultSet.getString("lastName"));
+                user.setLast_Name(resultSet.getString("last_name"));
                 user.setAge(resultSet.getByte("age"));
                 users.add(user);
             }
@@ -78,16 +83,10 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         try (Statement statement = connection.createStatement()) {
-            connection.setAutoCommit(false);
             statement.executeUpdate("TRUNCATE TABLE users");
-            connection.commit();
         } catch (SQLException | RuntimeException e) {
             e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
+
         }
     }
 }
