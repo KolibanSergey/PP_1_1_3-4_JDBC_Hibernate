@@ -30,7 +30,6 @@ public class Util {
             e.printStackTrace();
         }
         return connection;
-
     }
 
     public static org.hibernate.SessionFactory getSessionFactory() {
@@ -42,6 +41,7 @@ public class Util {
                         .setProperty("hibernate.connection.username", USERNAME)
                         .setProperty("hibernate.connection.password", PASSWORD)
                         .setProperty("hibernate.dialect", DIALECT)
+                        .setProperty("hibernate.format_sql", "true")
                         .addAnnotatedClass(User.class);
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();

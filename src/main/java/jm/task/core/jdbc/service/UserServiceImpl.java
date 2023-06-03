@@ -11,7 +11,6 @@ public class UserServiceImpl implements UserService {
     UserDao userDaoJDBC = new UserDaoJDBCImpl();
     UserDao userDaoHibernate = new UserDaoHibernateImpl();
 
-
     public void createUsersTable() {
         userDaoJDBC.createUsersTable();
         System.out.println("Таблица users успешно создана");
@@ -40,8 +39,6 @@ public class UserServiceImpl implements UserService {
             System.out.println(user);
         }
         return users;
-
-
     }
 
     public void cleanUsersTable() {
